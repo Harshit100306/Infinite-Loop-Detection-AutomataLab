@@ -1,0 +1,8 @@
+flowchart TD
+ A[Program P and input x] --> B[Hypothetical perfect halting decider H]
+ B --> C{Does H predict that P halts?}
+ C -->|Yes| D[Construct Q to loop forever]
+ C -->|No| E[Construct Q to halt]
+ D --> F[Run Q on its own description]
+ E --> F
+ F --> G[Contradiction: Q does the opposite of H's prediction]

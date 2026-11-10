@@ -1,0 +1,9 @@
+flowchart TD
+ A[Source code] --> B[Static AST checks]
+ B --> C{Known risky pattern?}
+ C -->|Yes| D[Flag for review]
+ C -->|No| E[No proof of termination]
+ E --> F[Tests and bounded execution]
+ F --> G[Timeouts and resource limits]
+ D --> H[Human review and remediation]
+ G --> H

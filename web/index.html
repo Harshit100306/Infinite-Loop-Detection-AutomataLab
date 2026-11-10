@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Automata Lab | Task 4</title>
+<style>
+:root{--bg:#07111f;--panel:#101f33;--panel2:#142942;--line:#24415d;--text:#eaf4ff;--muted:#9db2c9;--cyan:#55d6d0;--blue:#76a9ff;--amber:#ffc66d;--red:#ff7d89;--green:#80e0ad}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0%,#153252 0,transparent 35%),var(--bg);color:var(--text);font:15px/1.6 Inter,Segoe UI,Arial,sans-serif}
+.wrap{max-width:1180px;margin:auto;padding:28px 22px 60px}.nav{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}.brand{color:var(--cyan);font-weight:800;letter-spacing:.12em}
+.hero{padding:54px 0 34px;max-width:850px}.eyebrow{color:var(--cyan);text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:800}.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.03;margin:12px 0 18px;letter-spacing:-.04em}.hero p{font-size:18px;color:var(--muted);max-width:760px}
+.pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.pill{border:1px solid var(--line);border-radius:99px;padding:6px 12px;color:#c8ddf2;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:10px 0 26px}.stat,.panel{background:linear-gradient(145deg,var(--panel),#0d1b2d);border:1px solid var(--line);border-radius:18px;padding:20px}.stat b{display:block;font-size:25px;color:var(--cyan)}.stat span{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.panel h2{margin:0 0 5px;font-size:19px}.sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+textarea{width:100%;min-height:220px;background:#071321;color:#d9ecff;border:1px solid #31516e;border-radius:12px;padding:15px;font:13px/1.6 Consolas,monospace;resize:vertical;outline:none}
+button{border:0;border-radius:10px;padding:11px 16px;font-weight:750;cursor:pointer;background:var(--cyan);color:#06202a;margin:10px 7px 0 0}button.alt{background:#203c59;color:#dceeff;border:1px solid #345574}
+.result{margin-top:15px;padding:16px;border-radius:12px;background:#081726;border:1px solid var(--line);min-height:105px}.tag{font-size:11px;font-weight:800;letter-spacing:.1em}.HIGH_RISK_PATTERN{color:var(--red)}.POTENTIAL_RISK,.REVIEW{color:var(--amber)}.NO_PATTERN_FOUND{color:var(--green)}.INVALID_SYNTAX{color:var(--red)}
+pre{white-space:pre-wrap;word-break:break-word;color:#c4d9ed;font:12px/1.6 Consolas,monospace}.formula{background:#081726;padding:14px;border-radius:10px;color:var(--cyan);font-family:Consolas,monospace;overflow:auto}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px}.mini{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px}.mini h3{margin:0 0 7px;font-size:15px}.mini p{margin:0;color:var(--muted);font-size:13px}
+.notice{border-left:3px solid var(--amber);padding:12px 15px;background:#211d18;border-radius:0 10px 10px 0;color:#f5d7a7;margin-top:16px;font-size:13px}
+footer{margin-top:35px;color:#829bb5;font-size:12px;border-top:1px solid var(--line);padding-top:18px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.hero{padding-top:35px}}
+</style></head><body><main class="wrap">
+<div class="nav"><div class="brand">AUTOMATA LAB / 04</div><div>21CSC301T · Formal Language & Automata</div></div>
+<section class="hero"><div class="eyebrow">Task 4 · Computability in Software Engineering</div>
+<h1>Can this program<br><span style="color:var(--cyan)">ever stop?</span></h1>
+<p>An educational workbench for understanding infinite-loop detection, the Halting Problem, and practical restricted-case analysis.</p>
+<div class="pills"><span class="pill">Turing Machines</span><span class="pill">Decidability</span><span class="pill">Static Analysis</span><span class="pill">Runtime Monitoring</span></div></section>
+<div class="stats"><div class="stat"><b>1936</b><span>Foundational halting-problem result by Alan Turing</span></div><div class="stat"><b>Undecidable</b><span>General program-halting decision problem</span></div><div class="stat"><b>Restricted</b><span>Practical rules used in this demonstration</span></div></div>
+<div class="grid"><section class="panel"><h2>Restricted Python loop analyzer</h2><p class="sub">Try a snippet. The demo recognizes selected syntactic patterns only.</p>
+<textarea id="src">i = 0
+while i < 5:
+    print(i)</textarea>
+<div><button onclick="analyze()">Analyze snippet</button><button class="alt" onclick="sample(0)">Infinite loop</button><button class="alt" onclick="sample(1)">Counter update</button><button class="alt" onclick="sample(2)">Break exit</button></div>
+<div class="result" id="result"><span class="tag">AWAITING ANALYSIS</span><p>Choose a sample or enter a Python loop, then analyze.</p></div></section>
+<section class="panel"><h2>The theoretical boundary</h2><p class="sub">Why a universal detector cannot exist.</p>
+<div class="formula">HALT = { &lt;P, x&gt; | program P halts on input x }</div>
+<p>For unrestricted programs, no algorithm can decide HALT correctly for every program-input pair.</p>
+<div class="formula">D(P) = opposite behaviour of P(P)</div>
+<p>A hypothetical perfect decider leads to a contradiction when applied to a program that deliberately does the opposite of the decider's prediction.</p>
+<div class="notice">A heuristic warning is not a proof of non-termination. “No pattern found” is not a proof of termination.</div></section></div>
+<div class="cards"><article class="mini"><h3>01 · Static analysis</h3><p>Inspects source structure without executing it. This demo flags constant-true loops and selected unchanged-condition patterns.</p></article><article class="mini"><h3>02 · Bounded monitoring</h3><p>Runs a controlled finite-state model for a limited number of steps and checks whether a state repeats.</p></article><article class="mini"><h3>03 · Decidability vs recognizability</h3><p>Halting is recognizable by simulation when the program eventually halts, but its complement is not recognizable in the unrestricted setting.</p></article><article class="mini"><h3>04 · Engineering use</h3><p>Combine static checks, tests, timeouts, resource limits, and runtime telemetry. Each method has a defined scope.</p></article></div>
+<section class="panel" style="margin-top:16px"><h2>Finite-state cycle monitor</h2><p class="sub">Demonstration of exact cycle detection for a deterministic finite-state system.</p>
+<div class="formula">s₀ → s₁ → s₂ → … → sₖ</div><p>Because the state space is finite, a deterministic run either reaches a terminal state or eventually repeats a state. A repeated state proves a cycle in this model.</p></section>
+<footer>Automata Lab · Task 4 · Prepared for 21CSC301T · Educational prototype, not a general-purpose program verifier.</footer>
+</main>
+<script>
+const samples=[
+"while True:\\n    print('still running')",
+"i = 0\\nwhile i < 5:\\n    i += 1\\n    print(i)",
+"while True:\\n    if ready():\\n        break\\n    wait()"
+];
+function sample(i){document.getElementById('src').value=samples[i];analyze()}
+function analyze(){
+ const s=document.getElementById('src').value, out=document.getElementById('result');
+ const lines=s.split(/\\n/); let high=[],med=[],info=[];
+ for(let i=0;i<lines.length;i++){
+  const m=lines[i].match(/^\\s*while\\s+(True|1)\\s*:/);
+  if(m){let body=[],base=lines[i].match(/^\\s*/)[0].length;
+   for(let j=i+1;j<lines.length;j++){if(lines[j].trim() && (lines[j].match(/^\\s*/)[0].length<=base))break;body.push(lines[j])}
+   if(/\\bbreak\\b/.test(body.join('\\n')))info.push(i+1);else high.push(i+1);
+  }
+  const w=lines[i].match(/^\\s*while\\s+([A-Za-z_]\\w*)\\s*(?:<|>|==|!=|<=|>=)/);
+  if(w){let body=[];let base=lines[i].match(/^\\s*/)[0].length;for(let j=i+1;j<lines.length;j++){if(lines[j].trim()&&lines[j].match(/^\\s*/)[0].length<=base)break;body.push(lines[j])}
+   const assigned=new RegExp('(^|[^A-Za-z0-9_])'+w[1]+'\\\\s*(?:=|\\\\+=|-=|\\\\*=|/=)').test(body.join('\\n'));
+   if(!assigned)med.push(i+1);
+  }
+ }
+ let status, msg, cls;
+ if(high.length){status='HIGH_RISK_PATTERN';msg='Constant-true loop found without a visible break in the loop body.';cls='HIGH_RISK_PATTERN'}
+ else if(med.length){status='POTENTIAL_RISK';msg='A loop condition variable appears not to be updated in the body.';cls='POTENTIAL_RISK'}
+ else if(info.length){status='REVIEW';msg='A constant-true loop has a visible break; reachability is not proven.';cls='REVIEW'}
+ else {status='NO_PATTERN_FOUND';msg='No supported risk pattern found. This does not prove that the program halts.';cls='NO_PATTERN_FOUND'}
+ out.innerHTML='<span class="tag '+cls+'">'+status+'</span><p>'+msg+'</p><pre>Lines flagged: '+[...high,...med,...info].join(', ')+'\\nScope: simple text-based browser demonstration. Use the Python AST analyzer for the project implementation.</pre>';
+}
+</script></body></html>
